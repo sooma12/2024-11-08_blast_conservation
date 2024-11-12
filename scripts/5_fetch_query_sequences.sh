@@ -17,10 +17,8 @@ source ./config.cfg
 
 mkdir -p $QUERY_PROTEIN_DIR
 
-# Process one query at a time.  Get locus tag, protein ID, protein description
-query_acc=`sed -n "$SLURM_ARRAY_TASK_ID"p $PROTEIN_ID_LIST |  awk '{print $1}'`
-query_fa=${query_acc}.fa
-
 # Download fasta sequence for current query protein
-efetch -db protein -id ${query_acc} -format fasta > "${QUERY_PROTEIN_DIR}/${query_fa}"
-sleep 3 # try to avoid hitting query rate limit
+while IFS= read -r query_acc; do
+  efetch -db protein -id ${query_acc} -format fasta > "${QUERY_PROTEIN_DIR}/${query_acc}.fa"
+  sleep 3 # try to avoid hitting query rate limit
+done < ${PROTEIN_ID_LIST}
