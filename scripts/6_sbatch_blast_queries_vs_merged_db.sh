@@ -32,7 +32,7 @@ query_fa=${query_acc}.fa
 query_hits=${query_acc}_hits.txt
 
 # Download fasta sequence for current query protein
-esearch -db protein -query ${query_acc} | efetch -format fasta > ${QUERY_PROTEIN_DIR}/${query_fa}
+efetch -db protein -id ${query_acc} -format fasta > ${QUERY_PROTEIN_DIR}/${query_fa}
 
 # For current query, blast vs. all 100 sequences.  Output each result to a separate file
 mkdir -p ${BLAST_INTERMEDIATE_OUTDIR}/${query_acc}
