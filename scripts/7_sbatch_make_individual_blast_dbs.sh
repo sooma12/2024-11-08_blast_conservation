@@ -1,4 +1,13 @@
 #!/bin/bash
+#SBATCH --partition=short
+#SBATCH --job-name=make_individual_blastdbs
+#SBATCH --time=12:00:00
+#SBATCH -N 1
+#SBATCH -n 4
+#SBATCH --output=/work/geisingerlab/Mark/blast_conservation/2024-11-08_blast_conservation/logs/%x-%y.log
+#SBATCH --error=/work/geisingerlab/Mark/blast_conservation/2024-11-08_blast_conservation/logs/%x-%y.err
+#SBATCH --mail-type=END
+#SBATCH --mail-user=soo.m@northeastern.edu
 
 module load anaconda3
 source /shared/centos7/anaconda3/2021.05/etc/profile.d/conda.sh
