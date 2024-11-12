@@ -33,7 +33,7 @@ mkdir -p ${BLAST_INTERMEDIATE_OUTDIR}/${query_acc}
 # Read in list of blast databases
 while IFS= read -r database; do
   echo blastp -query ${QUERY_PROTEIN_DIR}/${query_fa} -db ${database} -out ${BLAST_INTERMEDIATE_OUTDIR}/${query_acc}/"$(basename $database).txt" -outfmt 6
-done < ../${BLAST_DB_LIST}
+done < ${BLAST_DB_LIST}
 
 # From each blast output, pick the best hit.  Send to a new file.
 if [ -f "${query_hits}" ] ; then
