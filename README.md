@@ -12,6 +12,10 @@ Genomes are available at: https://www.ncbi.nlm.nih.gov/datasets/genome/?bioproje
 
 ## Methods notes
 
+Eddie's `BfmR_Direct_Target_ProteinIDs.txt` has windows-style carriage returns that are messing up BLAST.
+
+Fixed using: `sed -i 's/\r$//' BfmR_Direct_Target_ProteinIDs.txt`
+
 1. Using ncbi datasets, download Bioproject metadata for PRJNA545079 -> to json
 2. 
 
