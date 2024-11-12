@@ -10,9 +10,6 @@
 #SBATCH --mail-type=END
 #SBATCH --mail-user=soo.m@northeastern.edu
 
-# wc -l BfmR_Direct_Target_ProteinIDs.txt
-# 285
-
 # load tools and source config
 module load anaconda3
 source /shared/centos7/anaconda3/2021.05/etc/profile.d/conda.sh
@@ -27,7 +24,6 @@ mkdir -p $BLAST_INTERMEDIATE_OUTDIR
 # e.g. `/work/geisingerlab/Mark/blast_conservation/2024-11-08_blast_conservation/blastdb/MRSN960`
 
 # Query sequences in fasta format are in ${QUERY_PROTEIN_DIR}/
-
 query_acc=`sed -n "$SLURM_ARRAY_TASK_ID"p $PROTEIN_ID_LIST |  awk '{print $1}'`
 query_fa=${query_acc}.fa
 query_hits=${query_acc}_hits.txt
@@ -36,7 +32,7 @@ query_hits=${query_acc}_hits.txt
 mkdir -p ${BLAST_INTERMEDIATE_OUTDIR}/${query_acc}
 # Read in list of blast databases
 while IFS= read -r database; do
-  blastp -query ${QUERY_PROTEIN_DIR}/${query_fa} -db ${database} -out ${BLAST_INTERMEDIATE_OUTDIR}/${query_acc}/$(basename $database).txt -outfmt 6
+  blastp -query ${QUERY_PROTEIN_DIR}/${query_fa} -db ${database} -out ${BLAST_INTERMEDIATE_OUTDIR}/${query_acc}/"$(basename $database).txt" -outfmt 6
 done < ../${BLAST_DB_LIST}
 
 # From each blast output, pick the best hit.  Send to a new file.
