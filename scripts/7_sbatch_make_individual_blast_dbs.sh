@@ -9,7 +9,7 @@ source ./config.cfg
 echo 'Genome fasta files to make blast protein db:' "$FASTA_DIR/*.faa"
 echo "blast db output directory: $BLAST_DB_DIR"
 
-mkdir -p $BLAST_DB_DIR
+mkdir -p $BLAST_DB_DIR $BLAST_DB_INPUT_FA_DIR
 
 # Delete list of blast databases if it exists
 if [ -f "${BLAST_DB_LIST}" ] ; then
