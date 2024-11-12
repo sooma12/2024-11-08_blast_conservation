@@ -32,7 +32,7 @@ query_hits=${query_acc}_hits.txt
 mkdir -p ${BLAST_INTERMEDIATE_OUTDIR}/${query_acc}
 # Read in list of blast databases
 while IFS= read -r database; do
-  echo blastp -query ${QUERY_PROTEIN_DIR}/${query_fa} -db ${database} -out ${BLAST_INTERMEDIATE_OUTDIR}/${query_acc}/"$(basename $database).txt" -outfmt 6
+  blastp -query ${QUERY_PROTEIN_DIR}/${query_fa} -db ${database} -out ${BLAST_INTERMEDIATE_OUTDIR}/${query_acc}/"$(basename $database).txt" -outfmt 6
 done < ${BLAST_DB_LIST}
 
 # From each blast output, pick the best hit.  Send to a new file.
@@ -44,7 +44,7 @@ for file in ${BLAST_INTERMEDIATE_OUTDIR}/${query_acc}/*.txt; do
   # Check if file has contents
   if [[ -s $file ]]; then
         # Extract the first line (best hit) and append to output_file
-        echo head -n 1 "$file" >> "${BLAST_INTERMEDIATE_OUTDIR}/top_hits/$query_hits"
+        head -n 1 "$file" >> "${BLAST_INTERMEDIATE_OUTDIR}/top_hits/$query_hits"
     else
         echo "$file is empty. Skipping."
     fi
