@@ -22,5 +22,5 @@ query_acc=`sed -n "$SLURM_ARRAY_TASK_ID"p $PROTEIN_ID_LIST |  awk '{print $1}'`
 query_fa=${query_acc}.fa
 
 # Download fasta sequence for current query protein
-efetch -db protein -id ${query_acc} -format fasta > ${QUERY_PROTEIN_DIR}/${query_fa}
+efetch -db protein -id ${query_acc} -format fasta > "${QUERY_PROTEIN_DIR}/${query_fa}"
 sleep 3 # try to avoid hitting query rate limit
