@@ -17,7 +17,7 @@ conda activate /work/geisingerlab/conda_env/blast_corr
 
 source ./config.cfg
 
-mkdir -p $BLAST_INTERMEDIATE_OUTDIR
+mkdir -p $BLAST_INTERMEDIATE_OUTDIR ${BLAST_INTERMEDIATE_OUTDIR}/top_hits/
 
 # List of databases is available
 # $BLAST_DB_LIST is a test file with a list of the blast database names
@@ -26,7 +26,7 @@ mkdir -p $BLAST_INTERMEDIATE_OUTDIR
 # Query sequences in fasta format are in ${QUERY_PROTEIN_DIR}/
 query_acc=`sed -n "$SLURM_ARRAY_TASK_ID"p $PROTEIN_ID_LIST |  awk '{print $1}'`
 query_fa=${query_acc}.fa
-query_hits=${query_acc}_hits.txt
+query_hits=${query_acc}_top_hits.txt
 
 # For current query, blast vs. all 100 sequences.  Output each result to a separate file
 mkdir -p ${BLAST_INTERMEDIATE_OUTDIR}/${query_acc}
