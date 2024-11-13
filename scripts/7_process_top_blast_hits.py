@@ -38,7 +38,7 @@ def main():
     df = pd.DataFrame(protein_data)
 
     metadata_line = f'### Protein queries: {args.query_list}; % identity cutoff {args.percent_identity}; ' \
-                    f'% length cutoff {args.percent_length}; number of subject strains {blastdb_count}'
+                    f'% length cutoff {args.percent_length}; number of subject strains {blastdb_count}\n'
 
     # Add metadata to first line of output file
     with open(args.outfile, 'w') as f:
