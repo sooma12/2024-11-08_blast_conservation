@@ -45,34 +45,34 @@ def get_args():
         description="Finds first ORF in each sequence in a FASTA file and returns their protein translations.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-    parser.add_argument('query_list',  # variable to access this data later: args.query_list
-                        metavar='QUERIES',  # shorthand to represent the input value
+    parser.add_argument('-q', '--query_list',  # variable to access this data later: args.query_list
+                        required=True,
                         help='Filepath to text file listing query protein accession IDs, e.g. BfmR direct targets list',
                         type=str)
 
-    parser.add_argument('query_fasta_dir',  # variable to access this data later: args.query_list
-                        metavar='QUERY_FASTA_DIR',  # shorthand to represent the input value
+    parser.add_argument('-f', '--query_fasta_dir',  # variable to access this data later: args.query_list
+                        required=True,
                         help='Filepath to directory containing query fasta files with files named {protein_id}.fa',
                         type=str)
 
-    parser.add_argument('top_hits_dir',  # variable to access this data later: args.query_list
-                        metavar='TOP_HITS_DIR',  # shorthand to represent the input value
+    parser.add_argument('-t', '--top_hits_dir',  # variable to access this data later: args.query_list
+                        required=True,
                         help='Filepath to directory containing merged BLAST top hit output files, '
                              'titled "{protein_id}_top_hits.txt',
                         type=str)
 
-    parser.add_argument('outfile',  # variable to access this data later: args.outfile
-                        metavar='OUT_FILE',
+    parser.add_argument('-o', '--outfile',  # variable to access this data later: args.outfile
+                        required=True,
                         help='Filepath for output',
                         type=str)
 
-    parser.add_argument('percent_identity',  # variable to access this data later: args.percent_identity
-                        metavar='PIDENT',
+    parser.add_argument('-i', '--percent_identity',  # variable to access this data later: args.percent_identity
+                        required=True,
                         help='Minimum BLASTp percent identity threshold',
                         type=float)
 
-    parser.add_argument('percent_length',  # variable to access this data later: args.percent_length
-                        metavar='PLENGTH',
+    parser.add_argument('-l', '--percent_length',  # variable to access this data later: args.percent_length
+                        required=True,
                         help='Minimum BLASTp length threshold',
                         type=float)
 

@@ -22,7 +22,7 @@ Fixed using: `sed -i 's/\r$//' BfmR_Direct_Target_ProteinIDs.txt`
 4. Run makebastdb to make one BLAST database for each strain's proteins
 5. Get query sequences corresponding to WP_ and YP_ protein identifier numbers contained in `BfmR_Direct_Target_ProteinIDs.txt`
 6. For each query sequence, BLASTp search against each of the 100 databases for the strains.  This script then grabs the top hit in each output (corresponding to the lowest E value) and concatenates all of the results for the 100 strains.  This produces a "top hits" file for each BfmR direct target containing the best hit by evalue from every strain.  For 11/12/2024, I did not use a minimum e value cutoff.
-7. Process the top hits file and join results into a table with 
+7. Python script to process BLASTp output.  On discovery, requires `conda activate /work/geisingerlab/conda_env/blast_corr` for Python packages.
 
 
 ## Other papers that do similar work
