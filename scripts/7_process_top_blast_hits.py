@@ -118,7 +118,6 @@ def get_query_details_from_fa(query_fastas_path, protein_id):
         try:
             with open(file_path, 'r') as file:
                 records = list(SeqIO.parse(file, "fasta"))
-                print(records)
                 if len(records) != 1:
                     print(f"Warning: Fasta file {file_path} contains {len(records)} fasta entries instead of 1.")
                 record = records[0]
