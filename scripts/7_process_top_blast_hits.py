@@ -44,7 +44,7 @@ def main():
     with open(args.outfile, 'w') as f:
         f.write(metadata_line)
 
-    df.to_csv(args.outfile, index=False)
+    df.to_csv(args.outfile, mode='a', header=True, index=False)
 
 
 def get_args():
