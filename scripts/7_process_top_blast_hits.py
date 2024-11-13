@@ -20,6 +20,7 @@ def main():
     args = get_args()
     prot_ids = _get_query_accession_list(query_file=args.query_list)
     protein_data = []  # will be a list of dictionaries
+    blastdb_count = _count_blast_databases(args.blastdb_dir)
 
     for prot_id in prot_ids:
         fasta_description, fasta_length = get_query_details_from_fa(query_fastas_path=args.query_fasta_dir,
@@ -30,11 +31,19 @@ def main():
                                                                identity_threshold=args.percent_identity,
                                                                length_threshold=args.percent_length)
         protein_data.append({'query_id': str(prot_id),
-                             'query_description': str(fasta_description),
+                             'query_description': str(fasta_description).replace(prot_id, "").strip(),
                              'query_length': fasta_length,
-                             'blast_hits_above_thresholds': blast_hits_over_threshold})
+                             'fraction_blast_hits_above_thresholds': round(blast_hits_over_threshold / blastdb_count, 2)})
 
     df = pd.DataFrame(protein_data)
+
+    metadata_line = f'### Protein queries: {args.query_list}; % identity cutoff {args.percent_identity}; ' \
+                    f'% length cutoff {args.percent_length}; number of subject strains {blastdb_count}'
+
+    # Add metadata to first line of output file
+    with open(args.outfile, 'w') as f:
+        f.write(metadata_line)
+
     df.to_csv(args.outfile, index=False)
 
 
@@ -53,6 +62,12 @@ def get_args():
     parser.add_argument('-f', '--query_fasta_dir',  # variable to access this data later: args.query_list
                         required=True,
                         help='Filepath to directory containing query fasta files with files named {protein_id}.fa',
+                        type=str)
+
+    parser.add_argument('-b', '--blastdb_dir',  # variable to access this data later: args.query_list
+                        required=True,
+                        help='Filepath to directory containing BLAST protein databases.  '
+                             'Assumes there are ".pos" files in database directory.',
                         type=str)
 
     parser.add_argument('-t', '--top_hits_dir',  # variable to access this data later: args.query_list
@@ -100,13 +115,19 @@ def get_query_details_from_fa(query_fastas_path, protein_id):
     """ open a fasta file corresponding to protein id and save description and length of the protein """
     file_path = os.path.join(query_fastas_path, f"{protein_id}.fa")
     if os.path.isfile(file_path):
-        with open(file_path, 'r') as file:
-            records = list(SeqIO.parse(file, "fasta"))
-            if len(records) != 1:
-                print(f"Warning: Fasta file {file_path} contains {len(records)} fasta entries instead of 1.")
-            record = records[0]
-            protein_name = record.description
-            sequence_length = len(record.seq)
+        try:
+            with open(file_path, 'r') as file:
+                records = list(SeqIO.parse(file, "fasta"))
+                print(records)
+                if len(records) != 1:
+                    print(f"Warning: Fasta file {file_path} contains {len(records)} fasta entries instead of 1.")
+                record = records[0]
+                protein_name = record.description
+                sequence_length = len(record.seq)
+        except FileNotFoundError:
+            print(f"failed to open file for {protein_id}")
+    else:
+        return 'NA', 'NA'
     return protein_name, sequence_length
 
 
@@ -135,6 +156,14 @@ def count_hits_above_threshold(top_hits_directory, protein_id, protein_length: f
         print(f"Warning: File {file_path} does not exist.")
 
     return high_quality_count
+
+
+def _count_blast_databases(blastdb_dir):
+    count = 0
+    for filename in os.listdir(blastdb_dir):
+        if filename.endswith(".pos"):
+            count += 1
+    return count
 
 
 if __name__ == "__main__":
