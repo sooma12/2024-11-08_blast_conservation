@@ -17,106 +17,12 @@ Eddie's `BfmR_Direct_Target_ProteinIDs.txt` has windows-style carriage returns t
 Fixed using: `sed -i 's/\r$//' BfmR_Direct_Target_ProteinIDs.txt`
 
 1. Using ncbi datasets, download Bioproject metadata for PRJNA545079 -> to json
-2. 
-
-
-## From ChatGPT:
-
-To download Acinetobacter baumannii genomes from NCBI using command-line tools (like Entrez Direct) and then filter them for high-quality genomes (>99% completeness and <1% contamination), you can follow this step-by-step guide. The process will involve downloading the genomes and then assessing their quality using an external tool like CheckM for filtering.
-
-
-Step 2: Search for Acinetobacter baumannii Assemblies
-You can use the esearch and efetch utilities to search for Acinetobacter baumannii genomes in NCBI and download their metadata.
-
-```bash
-# Search for Acinetobacter baumannii assemblies and retrieve assembly summaries
-esearch -db assembly -query "Acinetobacter baumannii" | esummary | xtract -pattern DocumentSummary -element FtpPath_RefSeq > acinetobacter_genomes.txt
-```
-
-This will give you a list of FTP links for downloading genome assemblies for Acinetobacter baumannii.
-
-Step 3: Download Genomes
-Use wget or curl to download the genome sequences (.fna files) from the FTP URLs. These are the complete or draft genome assemblies.
-
-bash
-Copy code
-# Loop over the URLs and download the genome assemblies
-for url in $(cat acinetobacter_genomes.txt); do
-    genome_url="${url}/$(basename ${url})_genomic.fna.gz"
-    wget $genome_url
-done
-Step 4: Install CheckM for Genome Quality Assessment
-To assess the quality of the genomes, you'll need a tool like CheckM that can estimate genome completeness and contamination based on lineage-specific marker sets. Install CheckM:
-
-bash
-Copy code
-# Install CheckM using conda (if you have Conda installed)
-conda install -c bioconda checkm-genome
-
-# Alternatively, install with pip
-pip install checkm-genome
-Step 5: Assess Genome Quality with CheckM
-Now that you have the genome sequences, you can use CheckM to evaluate their completeness and contamination. First, create a directory to organize the genome data for CheckM.
-
-bash
-Copy code
-mkdir checkm_input
-mv *.fna.gz checkm_input/
-gunzip checkm_input/*.gz  # Unzip the genome files
-Run CheckM to estimate genome completeness and contamination. CheckM requires a directory structure with genomes in subdirectories:
-
-bash
-Copy code
-# Run CheckM lineage_wf to assess completeness and contamination
-checkm lineage_wf checkm_input checkm_output -x fna
-This will generate a report with metrics like completeness and contamination for each genome.
-
-Step 6: Filter Genomes Based on Quality
-CheckM outputs a table in checkm_output that includes completeness and contamination values. You can filter this table to keep only genomes that meet your criteria (>99% completeness and <1% contamination).
-
-bash
-Copy code
-# Use awk to filter genomes based on the quality criteria
-awk -F '\t' '$12 > 99 && $13 < 1 {print $0}' checkm_output/storage/bin_stats_ext.tsv > high_quality_genomes.txt
-Step 7: Download High-Quality Genomes
-The filtered output high_quality_genomes.txt contains information about the high-quality genomes. Use this to download only those genomes:
-
-bash
-Copy code
-# Extract genome names or paths to download filtered genomes
-awk '{print $1}' high_quality_genomes.txt | while read genome; do
-    wget "ftp://ftp.ncbi.nlm.nih.gov/genomes/all/$genome.fna.gz"
-done
-Summary of Commands:
-Search for Acinetobacter baumannii genomes:
-
-bash
-Copy code
-esearch -db assembly -query "Acinetobacter baumannii" | esummary | xtract -pattern DocumentSummary -element FtpPath_RefSeq > acinetobacter_genomes.txt
-Download genome assemblies:
-
-bash
-Copy code
-for url in $(cat acinetobacter_genomes.txt); do
-    genome_url="${url}/$(basename ${url})_genomic.fna.gz"
-    wget $genome_url
-done
-Run CheckM to assess genome quality:
-
-bash
-Copy code
-checkm lineage_wf checkm_input checkm_output -x fna
-Filter genomes for >99% completeness and <1% contamination:
-
-bash
-Copy code
-awk -F '\t' '$12 > 99 && $13 < 1 {print $0}' checkm_output/storage/bin_stats_ext.tsv > high_quality_genomes.txt
-This process will allow you to download and filter Acinetobacter baumannii genomes from NCBI based on their completeness and contamination values using command-line tools.
-
-
-
-
-
+2. Extract Bioproject metadata file and extract accession numbers for individual A. baumannii genomes
+3. Using accession numbers of the A. baumannii strains, download protein fasta files (note, used GCF_ accession numbers)
+4. Run makebastdb to make one BLAST database for each strain's proteins
+5. Get query sequences corresponding to WP_ and YP_ protein identifier numbers contained in `BfmR_Direct_Target_ProteinIDs.txt`
+6. For each query sequence, BLASTp search against each of the 100 databases for the strains.  This script then grabs the top hit in each output (corresponding to the lowest E value) and concatenates all of the results for the 100 strains.  This produces a "top hits" file for each BfmR direct target containing the best hit by evalue from every strain.  For 11/12/2024, I did not use a minimum e value cutoff.
+7. Process the top hits file and join results into a table with 
 
 
 ## Other papers that do similar work

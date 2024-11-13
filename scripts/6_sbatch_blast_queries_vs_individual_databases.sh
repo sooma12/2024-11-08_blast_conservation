@@ -17,7 +17,7 @@ conda activate /work/geisingerlab/conda_env/blast_corr
 
 source ./config.cfg
 
-mkdir -p $BLAST_INTERMEDIATE_OUTDIR ${BLAST_INTERMEDIATE_OUTDIR}/top_hits/
+mkdir -p $BLAST_INTERMEDIATE_OUTDIR/top_hits/
 
 # List of databases is available
 # $BLAST_DB_LIST is a test file with a list of the blast database names
